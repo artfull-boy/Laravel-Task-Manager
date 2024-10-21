@@ -2,21 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ProjectResource;
 use App\Models\Project;
+use Illuminate\Http\Request;
+use App\Http\Resources\ProjectResource;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+
 
 class ProjectController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $query = Project::query();
-        $projects = $query->paginate(10);
-        return inertia("Projects/Index", ["projects"=> ProjectResource::collection($projects)]);
+        $name = $request->name;
+        $status = $request->status;
+        $sortField = $request->input("sorted","due_date");
+        $direction = $request->input("direction","desc");
+        if ($name) {
+            $query->where("name","like","%". $name ."%");
+        }
+        if ($status) {
+            $query->where("status", $status);
+        }
+        $projects = $query->orderBy($sortField,$direction)->paginate(10);
+        return inertia("Projects/Index", ["projects"=> ProjectResource::collection($projects),"nameQuery"=>$name,"statusQuery"=>$status,"sortField"=>$sortField,"direction"=>$direction]);
     }
 
     /**
