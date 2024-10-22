@@ -4,43 +4,49 @@ import { PROJECT_STATUS_CLASS_MAP, PROJECT_STATUS_TEXT_MAP } from "@/constants";
 import { Link } from "@inertiajs/react";
 import Pagination from "@/Components/Pagination";
 import { useState } from "react";
+import TableHeading from "@/Components/TableHeading";
 
-export default function Index({ projects,nameQuery,statusQuery, sortField, direction }) {
-    const queryParams = {}
+export default function Index({
+    projects,
+    nameQuery,
+    statusQuery,
+    sortField,
+    direction,
+}) {
+    const queryParams = {};
     if (statusQuery) {
-        queryParams["status"] = statusQuery
+        queryParams["status"] = statusQuery;
     }
     if (nameQuery) {
-        queryParams["name"] = nameQuery
+        queryParams["name"] = nameQuery;
     }
-    queryParams["sorted"] = sortField
-    queryParams["direction"] = direction
+    queryParams["sorted"] = sortField;
+    queryParams["direction"] = direction;
     const [name, setName] = useState("");
     const [status, setStatus] = useState("");
     const onNameChange = (e) => {
-        setName(e)
-    }
+        setName(e);
+    };
     const onStatusChange = (e) => {
-        setStatus(e)
-        queryParams["status"] = e
-        router.get(route("project.index"),queryParams)
-    }
+        setStatus(e);
+        queryParams["status"] = e;
+        router.get(route("project.index"), queryParams);
+    };
     const onPress = (e) => {
         if (e != "Enter") return;
-        queryParams["name"] = name
-        router.get(route("project.index"),queryParams)
-    }
+        queryParams["name"] = name;
+        router.get(route("project.index"), queryParams);
+    };
     const sortColumn = (e) => {
         if (queryParams["sorted"] == e) {
-            queryParams["direction"] = queryParams["direction"] == "asc" ? "desc" : "asc"
-            console.log(queryParams["direction"])
+            queryParams["direction"] =
+                queryParams["direction"] == "asc" ? "desc" : "asc";
+        } else {
+            queryParams["sorted"] = e;
+            queryParams["direction"] = "desc";
         }
-        else {
-            queryParams["sorted"] = e
-            queryParams["direction"] = "desc"
-        }
-        router.get(route("project.index"),queryParams)
-    }
+        router.get(route("project.index"), queryParams);
+    };
     return (
         <AuthenticatedLayout
             header={
@@ -65,9 +71,10 @@ export default function Index({ projects,nameQuery,statusQuery, sortField, direc
                                     className="bg-black rounded-md text-white"
                                     placeholder="Name of the project"
                                     defaultValue={nameQuery}
-
-                                    onChange={e => onNameChange(e.target.value)}
-                                    onKeyDown={e => onPress(e.key)}
+                                    onChange={(e) =>
+                                        onNameChange(e.target.value)
+                                    }
+                                    onKeyDown={(e) => onPress(e.key)}
                                 ></input>
                             </div>
                             <div className="w-[50%] h-[50px] flex flex-col gap-3">
@@ -77,30 +84,68 @@ export default function Index({ projects,nameQuery,statusQuery, sortField, direc
                                 <select
                                     name="name"
                                     defaultValue={statusQuery}
-
                                     className="bg-black rounded-md text-white"
-                                    onChange={e => onStatusChange(e.target.value)}
+                                    onChange={(e) =>
+                                        onStatusChange(e.target.value)
+                                    }
                                 >
                                     <option value={""}>Select Status</option>
                                     <option value={"pending"}>Pending</option>
-                                    <option value={"in_progress"}>In Progress</option>
-                                    <option value={"completed"}>Completed</option>
+                                    <option value={"in_progress"}>
+                                        In Progress
+                                    </option>
+                                    <option value={"completed"}>
+                                        Completed
+                                    </option>
                                 </select>
                             </div>
                         </div>
-                        <div className="p-6 text-gray-900 dark:text-gray-100">
+                        <div className="p-6 text-gray-900 dark:text-gray-100 overflow-auto">
                             <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
                                     <tr className="text-nowrap">
-                                        <th onClick={() => sortColumn("id")} className="px-3 py-3">ID</th>
+                                        <TableHeading
+                                            column={"id"}
+                                            sorted={queryParams["sorted"]}
+                                            direction={queryParams["direction"]}
+                                            sortColumn={sortColumn}
+                                        >
+                                            ID
+                                        </TableHeading>
                                         <th className="px-3 py-3">Image</th>
-                                        <th onClick={() => sortColumn("name")} className="px-3 py-3">Name</th>
-                                        <th onClick={() => sortColumn("status")} className="px-3 py-3">Status</th>
-                                        <th onClick={() => sortColumn("created_at")} className="px-3 py-3">
+                                        <TableHeading
+                                            column={"name"}
+                                            sorted={queryParams["sorted"]}
+                                            direction={queryParams["direction"]}
+                                            sortColumn={sortColumn}
+                                        >
+                                            Name
+                                        </TableHeading>
+                                        <TableHeading
+                                            column={"status"}
+                                            sorted={queryParams["sorted"]}
+                                            direction={queryParams["direction"]}
+                                            sortColumn={sortColumn}
+                                        >
+                                            Status
+                                        </TableHeading>
+                                        <TableHeading
+                                            column={"created_at"}
+                                            sorted={queryParams["sorted"]}
+                                            direction={queryParams["direction"]}
+                                            sortColumn={sortColumn}
+                                        >
                                             Created Date
-                                        </th>
-                                        <th onClick={() => sortColumn("due_date")} className="px-3 py-3">Due Date</th>
-                                        <th onClick={() => sortColumn("created_by")} className="px-3 py-3">
+                                        </TableHeading>
+                                        <TableHeading
+                                            column={"due_date"}
+                                            sorted={queryParams["sorted"]}
+                                            direction={queryParams["direction"]}
+                                            sortColumn={sortColumn}
+                                        >
+                                            Due Date
+                                        </TableHeading>
+                                        <th className="px-3 py-3">
                                             Created By
                                         </th>
                                         <th className="px-3 py-3">Actions</th>
