@@ -100,7 +100,6 @@ export default function Index({
                                 </select>
                             </div>
                         </div>
-                        {console.log(tasks)}
                         <div className="p-6 text-gray-900 dark:text-gray-100 overflow-auto">
                             <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
@@ -114,13 +113,14 @@ export default function Index({
                                             ID
                                         </TableHeading>
                                         <th className="px-3 py-3">Image</th>
+                                        <th className="px-3 py-3">Project Name</th>
                                         <TableHeading
                                             column={"name"}
                                             sorted={queryParams["sorted"]}
                                             direction={queryParams["direction"]}
                                             sortColumn={sortColumn}
                                         >
-                                            Name
+                                            Task Name
                                         </TableHeading>
                                         <TableHeading
                                             column={"status"}
@@ -166,6 +166,9 @@ export default function Index({
                                                     src={task.image_path}
                                                     style={{ width: 60 }}
                                                 />
+                                            </td>
+                                            <td className="px-3 py-2">
+                                                {task.project.name}
                                             </td>
                                             <th className="px-3 py-2 text-gray-100 text-nowrap hover:underline">
                                                 {task.name}
