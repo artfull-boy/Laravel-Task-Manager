@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\TaskResource;
 use App\Models\Project;
+use App\Models\Task;
 use Illuminate\Http\Request;
 use App\Http\Resources\ProjectResource;
 use App\Http\Requests\StoreProjectRequest;
@@ -19,16 +21,16 @@ class ProjectController extends Controller
         $query = Project::query();
         $name = $request->name;
         $status = $request->status;
-        $sortField = $request->input("sorted","due_date");
-        $direction = $request->input("direction","desc");
+        $sortField = $request->input("sorted", "created_at");
+        $direction = $request->input("direction", "desc");
         if ($name) {
-            $query->where("name","like","%". $name ."%");
+            $query->where("name", "like", "%" . $name . "%");
         }
         if ($status) {
             $query->where("status", $status);
         }
-        $projects = $query->orderBy($sortField,$direction)->paginate(10);
-        return inertia("Projects/Index", ["projects"=> ProjectResource::collection($projects),"nameQuery"=>$name,"statusQuery"=>$status,"sortField"=>$sortField,"direction"=>$direction]);
+        $projects = $query->orderBy($sortField, $direction)->paginate(10);
+        return inertia("Projects/Index", ["projects" => ProjectResource::collection($projects), "nameQuery" => $name, "statusQuery" => $status, "sortField" => $sortField, "direction" => $direction,"success"=>session("success")]);
     }
 
     /**
@@ -36,7 +38,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
+        return inertia("Projects/Create");
     }
 
     /**
@@ -44,15 +46,35 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-        //
+        $data = $request->validated();
+        $data["created_by"] = auth()->id();
+        $data["updated_by"] = auth()->id();
+        if ($request->hasFile('image_path')) {
+                $data["image_path"] = "storage/". $request->file('image_path')->store('images','public');
+        }
+        Project::create($data);
+        return redirect()->route("project.index")->with("success","Project Created Successfully");
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Project $project)
+    public function show(Request $request, Project $project)
     {
-        //
+        $query = $project->tasks();
+
+        $queryParam["name"] = $request->name;
+        $queryParam["status"] = $request->status;
+        $queryParam["sorted"] = $request->input("sorted", "due_date");
+        $queryParam["direction"] = $request->input("direction", "desc");
+        if ($queryParam["name"]) {
+            $query->where("name", "like", "%" . $queryParam["name"] . "%");
+        }
+        if ($queryParam["status"]) {
+            $query->where("status", $queryParam["status"]);
+        }
+        $tasks = $query->orderBy( $queryParam["sorted"],  $queryParam["direction"])->paginate(10);
+        return inertia("Projects/Show", ["project" => new ProjectResource($project), "tasks" => TaskResource::collection($tasks), "queryParams" => $queryParam]);
     }
 
     /**
