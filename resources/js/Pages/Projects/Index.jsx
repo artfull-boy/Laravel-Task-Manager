@@ -3,7 +3,7 @@ import { Head, router } from "@inertiajs/react";
 import { PROJECT_STATUS_CLASS_MAP, PROJECT_STATUS_TEXT_MAP } from "@/constants";
 import { Link } from "@inertiajs/react";
 import Pagination from "@/Components/Pagination";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TableHeading from "@/Components/TableHeading";
 
 export default function Index({
@@ -12,6 +12,7 @@ export default function Index({
     statusQuery,
     sortField,
     direction,
+    success,
 }) {
     const queryParams = {};
     if (statusQuery) {
@@ -47,12 +48,29 @@ export default function Index({
         }
         router.get(route("project.index"), queryParams);
     };
+    const handleClick = (project) => {
+        router.get(route("project.show", project));
+    };
+    useEffect(()=> {
+        const elm = document.getElementById("success_div")
+        setTimeout(()=> {
+            elm.style.display = "none"
+        },3000)
+    },[])
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    Projects
-                </h2>
+                <div className="flex justify-between">
+                    <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                        Projects
+                    </h2>
+                    <Link
+                        href={route("project.create")}
+                        className="bg-green-600 p-2 text-sm rounded-lg text-white"
+                    >
+                        Add Project
+                    </Link>
+                </div>
             }
         >
             <Head title="Projects" />
@@ -100,6 +118,11 @@ export default function Index({
                                 </select>
                             </div>
                         </div>
+                        {success && (
+                            <div id="success_div" className="bg-green-600 text-white m-[40px] p-[30px]">
+                                {success}
+                            </div>
+                        )}
                         <div className="p-6 text-gray-900 dark:text-gray-100 overflow-auto">
                             <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
@@ -166,7 +189,12 @@ export default function Index({
                                                     style={{ width: 60 }}
                                                 />
                                             </td>
-                                            <th className="px-3 py-2 text-gray-100 text-nowrap hover:underline">
+                                            <th
+                                                onClick={() =>
+                                                    handleClick(project)
+                                                }
+                                                className="px-3 cursor-pointer py-2 text-gray-100 text-nowrap hover:underline"
+                                            >
                                                 {project.name}
                                             </th>
                                             <td className="px-3 py-2">
