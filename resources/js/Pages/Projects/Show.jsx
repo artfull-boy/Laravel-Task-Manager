@@ -57,7 +57,7 @@ export default function Show({ project, queryParams, tasks }) {
                     <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div>
                             <img
-                                src={"/" + project.image_path}
+                                src={project.image_path.startsWith("http") ? project.image_path : "/storage/" + project.image_path}
                                 alt=""
                                 className="w-full h-64 object-cover"
                             />
