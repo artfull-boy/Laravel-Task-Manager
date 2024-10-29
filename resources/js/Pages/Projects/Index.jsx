@@ -51,6 +51,9 @@ export default function Index({
     const handleClick = (project) => {
         router.get(route("project.show", project));
     };
+    const deleteProject = (project) => {
+        router.delete(route("project.destroy",project))
+    }
     useEffect(()=> {
         const elm = document.getElementById("success_div")
         setTimeout(()=> {
@@ -185,7 +188,7 @@ export default function Index({
                                             </td>
                                             <td className="px-3 py-2">
                                                 <img
-                                                    src={project.image_path}
+                                                    src={project.image_path.startsWith("http") ? project.image_path : "/storage/" + project.image_path}
                                                     style={{ width: 60 }}
                                                 />
                                             </td>
