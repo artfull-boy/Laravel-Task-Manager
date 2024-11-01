@@ -18,12 +18,12 @@ export default function Show({ project, queryParams, tasks }) {
     const onStatusChange = (e) => {
         setStatus(e);
         queryParams["status"] = e;
-        router.get(route("project.show"), queryParams);
+        router.get(route("project.show",project.id), queryParams);
     };
     const onPress = (e) => {
         if (e != "Enter") return;
         queryParams["name"] = name;
-        router.get(route("project.show"), queryParams);
+        router.get(route("project.show",project.id), queryParams);
     };
     const sortColumn = (e) => {
         if (queryParams["sorted"] == e) {
@@ -33,7 +33,7 @@ export default function Show({ project, queryParams, tasks }) {
             queryParams["sorted"] = e;
             queryParams["direction"] = "desc";
         }
-        router.get(route("project.show"), queryParams);
+        router.get(route("project.show",project.id), queryParams);
     };
     return (
         <AuthenticatedLayout
