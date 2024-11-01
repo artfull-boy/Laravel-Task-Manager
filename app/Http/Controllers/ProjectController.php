@@ -31,7 +31,8 @@ class ProjectController extends Controller
             $query->where("status", $status);
         }
         $projects = $query->orderBy($sortField, $direction)->paginate(10);
-        return inertia("Projects/Index", ["projects" => ProjectResource::collection($projects), "nameQuery" => $name, "statusQuery" => $status, "sortField" => $sortField, "direction" => $direction,"success"=>session("success")]);
+        $projectResource = ProjectResource::collection($projects);
+        return inertia("Projects/Index", ["projects" => $projectResource, "nameQuery" => $name, "statusQuery" => $status, "sortField" => $sortField, "direction" => $direction,"success"=>session("success")]);
     }
 
     /**
@@ -100,7 +101,7 @@ class ProjectController extends Controller
                 $data["image_path"] = $request->file('image_path')->store('images','public');
         }
         $project->update($data);
-        return redirect()->route('project.index')->with('status', 'Project Updated!');
+        return redirect()->route('project.index')->with('success', 'Project Updated!');
     }
 
     /**
