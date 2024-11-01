@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\TaskResource;
 use App\Models\Task;
-use App\Services\TaskService;
+use App\Models\User;
+use App\Models\Project;
 use Illuminate\Http\Request;
+use App\Services\TaskService;
+use App\Http\Resources\TaskResource;
 use App\Http\Requests\StoreTaskRequest;
+use App\Http\Resources\ProjectResource;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\UpdateTaskRequest;
+use App\Http\Resources\displayUsersName;
+use App\Http\Resources\displayProjectsName;
 
 class TaskController extends Controller
 {
@@ -18,11 +24,12 @@ class TaskController extends Controller
     {
         $name = $request->name;
         $status = $request->status;
-        $sortField = $request->input("sorted","due_date");
-        $direction = $request->input("direction","desc");
+        $priority = $request->priority;
+        $sortField = $request->input("sorted", "created_at");
+        $direction = $request->input("direction", "desc");
         $taskInstance = new TaskService();
-        $tasks = $taskInstance->transform($name,$status,$sortField,$direction);
-        return inertia("Tasks/Index", ["tasks"=> TaskResource::collection($tasks),"nameQuery"=>$name,"statusQuery"=>$status,"sortField"=>$sortField,"direction"=>$direction]);
+        $tasks = $taskInstance->transform($name, $status, $sortField, $direction, $priority);
+        return inertia("Tasks/Index", ["tasks" => TaskResource::collection($tasks), "nameQuery" => $name, "statusQuery" => $status, "sortField" => $sortField, "direction" => $direction, "priorityQuery" => $priority,"success" => session("success")]);
     }
 
 
@@ -31,7 +38,12 @@ class TaskController extends Controller
      */
     public function create()
     {
-        //
+        $projects = displayProjectsName::collection(Project::all());
+        $users = displayUsersName::collection(User::all());
+        return inertia("Tasks/Create", [
+            "dataSent"=>
+            [$projects, $users]
+        ]);
     }
 
     /**
@@ -39,15 +51,14 @@ class TaskController extends Controller
      */
     public function store(StoreTaskRequest $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Task $task)
-    {
-        //
+        $data = $request->validated();
+        $data["created_by"] = auth()->id();
+        $data["updated_by"] = auth()->id();
+        if ($request->hasFile("image_path")) {
+            $data["image_path"] = "storage/" . $request->file('image_path')->store('images', 'public');
+        }
+        Task::create($data);
+        return to_route("task.index")->with("success", "Task Created Successfully");
     }
 
     /**
@@ -55,7 +66,10 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
-        //
+        $projects = displayProjectsName::collection(Project::all());
+        $users = displayUsersName::collection(User::all());
+        return inertia("Tasks/Edit",["dataSent"=>
+            [$projects, $users,$task]]);
     }
 
     /**
@@ -63,7 +77,16 @@ class TaskController extends Controller
      */
     public function update(UpdateTaskRequest $request, Task $task)
     {
-        //
+        $data = $request->validated();
+        $data["updated_by"] = auth()->id();
+        if ($request->hasFile("image_path")) {
+            if($task->image_path) {
+                Storage::disk("public")->delete($task->image_path);
+            }
+            $data["image_path"] = "storage/" . $request->file('image_path')->store('images', 'public');
+        }
+        $task->update($data);
+        return to_route("task.index")->with("success","Task updated Successfully");
     }
 
     /**
@@ -71,6 +94,8 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        //
+        $name = $task->name;
+        $task->delete();
+        return to_route("task.index")->with("success","Task \"$name\" Deleted Successfully");
     }
 }
