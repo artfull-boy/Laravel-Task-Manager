@@ -1,6 +1,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
-export default function Create(dataSent) {
+export default function Create({projects, users}) {
     const { data, setData, post, errors } = useForm({
         image_path: "",
         name: "",
@@ -26,7 +26,6 @@ export default function Create(dataSent) {
         >
             <Head title="Create Task" />
 
-            {/* <pre className="text-wrap text-white">{JSON.stringify(dataSent.dataSent[1].data)}</pre> */}
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -177,7 +176,7 @@ export default function Create(dataSent) {
                                         }
                                     >
                                         <option value="">Select Project</option>
-                                        {dataSent.dataSent[0].data.map((project) => (
+                                        {projects.data.map((project) => (
                                             <option value={project.id}>{project.name}</option>
                                         ))}
                                     </select>
@@ -200,7 +199,7 @@ export default function Create(dataSent) {
                                         }
                                     >
                                         <option value="">Select User</option>
-                                        {dataSent.dataSent[1].data.map((user) => (
+                                        {users.data.map((user) => (
                                             <option value={user.id}>{user.name}</option>
                                         ))}
                                     </select>
