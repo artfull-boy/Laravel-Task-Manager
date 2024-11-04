@@ -56,6 +56,9 @@ export default function Index({
         queryParams["name"] = name;
         router.get(route("task.index"), queryParams);
     };
+    const handleTask = (task) => {
+        router.get(route("task.show",task));
+    }
     const sortColumn = (e) => {
         if (queryParams["sorted"] == e) {
             queryParams["direction"] =
@@ -252,7 +255,7 @@ export default function Index({
                                             >
                                                 {task.project.name}
                                             </td>
-                                            <th className="px-3 py-2 text-gray-100 text-nowrap">
+                                            <th onClick={()=>handleTask(task)} className="px-3 py-2 text-gray-100 text-nowrap cursor-pointer hover:underline">
                                                 {task.name}
                                             </th>
                                             <td className="px-3 py-2">
