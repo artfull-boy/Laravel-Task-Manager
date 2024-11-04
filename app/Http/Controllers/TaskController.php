@@ -41,8 +41,8 @@ class TaskController extends Controller
         $projects = displayProjectsName::collection(Project::all());
         $users = displayUsersName::collection(User::all());
         return inertia("Tasks/Create", [
-            "dataSent"=>
-            [$projects, $users]
+            "projects"=> $projects,
+            "users"=>$users
         ]);
     }
 
@@ -59,6 +59,13 @@ class TaskController extends Controller
         }
         Task::create($data);
         return to_route("task.index")->with("success", "Task Created Successfully");
+    }
+
+    public function show(Task $task) {
+        $task->load(['project', 'createdBy', 'updatedBy', 'assignedUser']);
+        $taskResource = new TaskResource($task);
+        dd($taskResource);
+    return inertia("Tasks/Show",["task"=>$taskResource]);
     }
 
     /**
