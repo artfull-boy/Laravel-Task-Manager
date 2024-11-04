@@ -29,7 +29,7 @@ export default function Show({ task }) {
                                 src={
                                     task.image_path.startsWith("http")
                                         ? task.image_path
-                                        : "/storage/" + task.image_path
+                                        : "/" + task.image_path
                                 }
                                 alt=""
                                 className="w-full h-64 object-cover"
