@@ -62,9 +62,7 @@ class TaskController extends Controller
     }
 
     public function show(Task $task) {
-        $task->load(['project', 'createdBy', 'updatedBy', 'assignedUser']);
         $taskResource = new TaskResource($task);
-        dd($taskResource);
     return inertia("Tasks/Show",["task"=>$taskResource]);
     }
 
