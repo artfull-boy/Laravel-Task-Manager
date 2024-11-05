@@ -13,6 +13,7 @@ Route::redirect('/', '/dashboard');
 Route::middleware(['auth','verified'])->group(function () {
     Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
     Route::resource('project', ProjectController::class );
+    Route::get('task/my_tasks', [TaskController::class,"my_tasks"] )->name("task.my_tasks");
     Route::resource('task', TaskController::class );
     Route::resource('user', UserController::class );
 });
