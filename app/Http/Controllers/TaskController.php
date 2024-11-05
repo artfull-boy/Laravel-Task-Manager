@@ -103,4 +103,16 @@ class TaskController extends Controller
         $task->delete();
         return to_route("task.index")->with("success","Task \"$name\" Deleted Successfully");
     }
+
+    public function my_tasks(Request $request) {
+        $user = auth()->id();
+        $name = $request->name;
+        $status = $request->status;
+        $priority = $request->priority;
+        $sortField = $request->input("sorted", "created_at");
+        $direction = $request->input("direction", "desc");
+        $taskInstance = new TaskService();
+        $tasks = $taskInstance->transformMyTasks($user,$name, $status, $sortField, $direction, $priority);
+        return inertia("Tasks/Index", ["tasks" => TaskResource::collection($tasks), "nameQuery" => $name, "statusQuery" => $status, "sortField" => $sortField, "direction" => $direction, "priorityQuery" => $priority,"success" => session("success")]);
+    }
 }
