@@ -1,6 +1,6 @@
 # Task Management System
 
-![Dashboard Screenshot](./githubImages/dashboard.png)
+![Dashboard Screenshot](./public/githubImages/dashboard.png)
 
 A **Task Management System** built with **Laravel**, **Inertia.js**, and **Tailwind CSS**. This project is designed to help manage and track tasks efficiently, with a dashboard view displaying metrics like total tasks, pending tasks, completed tasks, and in-progress tasks. It also includes an overview of assigned tasks with relevant details.
 
