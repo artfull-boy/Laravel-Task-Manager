@@ -83,10 +83,10 @@ A **Task Management System** built with **Laravel**, **Inertia.js**, and **Tailw
 ![Tasks Screenshot](./public/githubImages/allTasks.png)
 
 ### Create Project
-![Create Project Screenshot](./public/githubImages/createProject.png)
+![Create Project Screenshot](./public/githubImages/CreateProject.png)
 
 ### Create User
-![Create User Screenshot](./public/githubImages/createUser.png)
+![Create User Screenshot](./public/githubImages/CreateUser.png)
 
 ### Create Task
-![Create Task Screenshot](./public/githubImages/createTask.png)
+![Create Task Screenshot](./public/githubImages/CreateTask.png)
