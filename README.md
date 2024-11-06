@@ -74,11 +74,19 @@ A **Task Management System** built with **Laravel**, **Inertia.js**, and **Tailw
 ## Screenshots
 
 ### Dashboard
-![Dashboard Screenshot](./path-to-your-image.png)
+![Dashboard Screenshot](./public/githubImages/dashboard.png)
 
-> Dashboard displaying task statistics and assigned tasks.
+### Users
+![Users Screenshot](./public/githubImages/Users.png)
 
-### Task Management
-![Task Management Screenshot](./path-to-your-task-screenshot.png)
+### Tasks
+![Tasks Screenshot](./public/githubImages/allTasks.png)
 
-> Overview of tasks with filters, search, and sort options.
+### Create Project
+![Create Project Screenshot](./public/githubImages/createProject.png)
+
+### Create User
+![Create User Screenshot](./public/githubImages/createUser.png)
+
+### Create Task
+![Create Task Screenshot](./public/githubImages/createTask.png)
